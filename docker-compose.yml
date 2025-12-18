@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # 1. 您的 Python LangGraph 应用
+  agent_api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # 挂载代码实现热重载
+    environment:
+      # DeepSeek Key
+      DEEPSEEK_API_KEY: "sk-ef4b65787f0a426d93a4a77621438872" 
+      
+      # PostgreSQL 连接配置 (注意 host 是服务名 'postgres')
+      POSTGRES_DB: langgraph_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST: postgres
+      DB_URI: "postgresql://user:password@postgres:5432/langgraph_db"
+
+      # Neo4j 连接配置 (注意 host 是服务名 'neo4j')
+      NEO4J_URI: "bolt://neo4j:7687"
+      NEO4J_USERNAME: "neo4j"
+      NEO4J_PASSWORD: "password"
+    depends_on:
+      - postgres
+      - neo4j
+    command: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+
+  # 2. PostgreSQL (用于 LangGraph 记忆/Checkpoint)
+  postgres:
+    image: pgvector/pgvector:pg15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: langgraph_db
+    ports:
+      - "5433:5432" # 允许您使用本地工具(如DBeaver)连接
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 3. Neo4j (用于知识图谱)
+  neo4j:
+    image: neo4j:5.15-community
+    restart: always
+    ports:
+      - "7474:7474" # HTTP 浏览器界面 (http://localhost:7474)
+      - "7687:7687" # Bolt 协议端口
+    environment:
+      NEO4J_AUTH: neo4j/password
+    volumes:
+      - neo4j_data:/data
+
+# 4. Backtrader 回测引擎服务
+  backtrader_engine:
+    build: ./backtrader_service  # 这里指向您刚才新建的文件夹
+    ports:
+      - "8001:8001" # 开放 API 端口给主机 (方便调试)
+    environment:
+      # 让回测引擎也能连接数据库读取行情
+      DB_URI: "postgresql://user:password@postgres:5432/langgraph_db"
+    depends_on:
+      - postgres
+
+# 定义数据卷以持久化数据
+volumes:
+  postgres_data:
+  neo4j_data:

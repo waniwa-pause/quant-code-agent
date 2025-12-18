@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# 安装必要的库
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple fastapi uvicorn backtrader pandas psycopg2-binary sqlalchemy requests
+
+COPY main.py .
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
