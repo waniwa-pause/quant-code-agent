@@ -1,7 +1,45 @@
-echo "__pycache__/" > .gitignore
-echo "*.pyc" >> .gitignore
-echo ".DS_Store" >> .gitignore
-echo ".vscode/" >> .gitignore
-echo "mage_env/" >> .gitignore
-echo "venv/" >> .gitignore
-echo "key.cfg" >> .gitignore
+# --- Python 相关 ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+mage_env/
+.ipynb_checkpoints/
+
+# --- 环境变量与密钥 (极其重要!) ---
+.env
+*.cfg
+# 如果你的 key.cfg 包含 API Key 或数据库密码，保留下面这行
+key.cfg
+
+# --- 数据库与大数据文件 ---
+# 忽略所有 CSV 数据文件（因为你提到正在导入行情数据，这些通常很大）
+*.csv
+*.xlsx
+*.gz
+*.zip
+*.tar.gz
+
+# 忽略 Docker 持久化数据目录（如果你在 docker-compose 中映射了 volumes）
+pgdata/
+neo4j_data/
+
+# --- 日志与临时文件 ---
+*.log
+logs/
+tmp/
+
+# --- 操作系统与编辑器 ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.project
+.pydevproject
+
+# --- Docker 相关 ---
+.docker/

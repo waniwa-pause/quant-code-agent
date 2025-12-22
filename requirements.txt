@@ -17,3 +17,4 @@ langchain-huggingface
 sentence-transformers    
 langgraph-checkpoint-postgres
 requests
+rarfile

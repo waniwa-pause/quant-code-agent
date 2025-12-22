@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # 1. 您的 Python LangGraph 应用

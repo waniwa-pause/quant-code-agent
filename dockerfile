@@ -1,7 +1,6 @@
 # Dockerfile
 # 1. 选择一个包含 Python 的基础镜像
 FROM python:3.11-slim
-
 # 2. 设置工作目录
 WORKDIR /app
 
